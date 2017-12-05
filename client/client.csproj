@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="static\Down.jpg" />
+    <EmbeddedResource Include="static\IMG_20170417_124759.jpg" />
+  </ItemGroup>
+</Project>

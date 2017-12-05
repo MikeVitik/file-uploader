@@ -1,0 +1,2 @@
+For VS2015 download MSBuild15 or install VS2017
+https://www.visualstudio.com/ru/thank-you-downloading-visual-studio/?sku=BuildTools&rel=15
