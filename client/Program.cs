@@ -16,7 +16,7 @@ namespace ConsoleApplication1 {
                 // Add first file content 
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-                var list = (new String[] { assembly.GetManifestResourceNames().First() }).ToList();
+                var list = assembly.GetManifestResourceNames().ToList();//(new String[] { assembly.GetManifestResourceNames().First() }).ToList();
                     list
                     .ForEach(x => {
                         Console.WriteLine(x);
@@ -26,6 +26,7 @@ namespace ConsoleApplication1 {
                         };
                         content.Add(fileContent);
                     });
+                    //content.Add(new HttpContent().)
 
                 // Make a call to Web API
                 var result = client.PostAsync("/api/upload", content).Result;

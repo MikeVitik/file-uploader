@@ -1,44 +1,61 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+using System;
 using System.IO;
-using System.Linq;
 //using System.Net;
 //using System.Net.Http;
 //using System.Net.Http.Headers;
 //using System.Web;
 //using System.Web.Http;
 //using System.Web.Mvc;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Net.Http.Headers;
 
-using WebService.Helpers;
 
-namespace web_service.Controllers
+namespace WebService.Helpers
 {
-
-
-    [Route("api/[controller]")]
-    public class UploadController : Controller
+    //https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads
+    public static class MultipartRequestHelper
     {
-        [HttpGet]
-        public string Get()
+        // Content-Type: multipart/form-data; boundary="----WebKitFormBoundarymx2fSWqWSd0OxQqq"
+        // The spec says 70 characters is a reasonable limit.
+        public static string GetBoundary(MediaTypeHeaderValue contentType, int lengthLimit)
         {
-            return "test";
-        }
-        [HttpPost]
-        public async void Post()
-        {
-            FormValueProvider formModel;
-            MemoryStream m = new MemoryStream();
-            Request.Body.CopyTo(m);
-            m.Position = 0;
-            var stream = new MemoryStream();//System.IO.File.Create("d:\\temp\\myfile.temp");
-            //{
-                formModel = await Request.StreamFile(m, stream);
-            //}
+            var boundary = HeaderUtilities.RemoveQuotes(contentType.Boundary);
+            if (string.IsNullOrWhiteSpace(boundary.Value))
+            {
+                throw new InvalidDataException("Missing content-type boundary.");
+            }
+
+            if (boundary.Length > lengthLimit)
+            {
+                throw new InvalidDataException(
+                    $"Multipart boundary length limit {lengthLimit} exceeded.");
+            }
+
+            return boundary.Value;
         }
 
+        public static bool IsMultipartContentType(string contentType)
+        {
+            return !string.IsNullOrEmpty(contentType)
+                   && contentType.IndexOf("multipart/", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        public static bool HasFormDataContentDisposition(ContentDispositionHeaderValue contentDisposition)
+        {
+            // Content-Disposition: form-data; name="key";
+            return contentDisposition != null
+                   && contentDisposition.DispositionType.Equals("form-data")
+                   && string.IsNullOrEmpty(contentDisposition.FileName.Value)
+                   && string.IsNullOrEmpty(contentDisposition.FileNameStar.Value);
+        }
+
+        public static bool HasFileContentDisposition(ContentDispositionHeaderValue contentDisposition)
+        {
+            // Content-Disposition: form-data; name="myfile1"; filename="Misc 002.jpg"
+            return contentDisposition != null
+                   && contentDisposition.DispositionType.Equals("form-data")
+                   && (!string.IsNullOrEmpty(contentDisposition.FileName.Value)
+                       || !string.IsNullOrEmpty(contentDisposition.FileNameStar.Value));
+        }
     }
 
     //public class UploadController : Controller {
