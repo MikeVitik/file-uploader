@@ -12,6 +12,7 @@ using Microsoft.Net.Http.Headers;
 namespace WebService.Helpers
 {
     //https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads
+    //https://github.com/aspnet/HttpAbstractions/blob/dev/src/Microsoft.AspNetCore.WebUtilities/MultipartReader.cs
     public static class MultipartRequestHelper
     {
         // Content-Type: multipart/form-data; boundary="----WebKitFormBoundarymx2fSWqWSd0OxQqq"
